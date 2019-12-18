@@ -5,9 +5,16 @@ data "aws_ami" "ami" {
   owners = ["amazon"]
   filter { name = "name", values = ["amzn2-ami-hvm-2.0*x86*"] }
 }
+
+data "aws_subnet" "subnet" {
+  filter {
+    name   = "tag:Name"
+    values = ["SUBNETD5B"]
+  }
+}
 resource "aws_instance" "web" {
   ami           = "${data.aws_ami.ami.id}"
   instance_type = "t2.micro"
-  subnet_id = "subnet-0b1a60c5dd16fa6b5"
+  subnet_id = "${data.aws_subnet.subnet.id}"
   tags { Name  = "${var.name}-CREATED-BY-JENKINS" }
 }
